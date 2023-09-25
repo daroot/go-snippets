@@ -135,23 +135,23 @@ func Save(t *testing.T, goldfile string, expected []byte) {
 func Compare[T any](t *testing.T, testname string, goldfile string, actual T, cmpopts ...cmp.Option) bool {
 	t.Helper()
 
-	actualbytes, err := json.MarshalIndent(actual, "", "  ")
-	if err != nil {
-		t.Fatalf("%v: failed to json encode actual (type %T): %v", testname, actual, err)
-	}
-
 	// if our update-golden flag is set,
 	// first we save the actual output as the new expected,
 	// which should additionallly ensure
 	// that expected will match actual for this run.
 	if DoingUpdate() {
+		actualbytes, err := json.MarshalIndent(actual, "", "  ")
+		if err != nil {
+			t.Fatalf("%v: failed to json encode actual (type %T): %v", testname, actual, err)
+		}
+
 		Save(t, goldfile, actualbytes)
 	}
 
 	expectedbytes := Load(t, goldfile)
 
 	var expected T
-	if err = json.Unmarshal(expectedbytes, &expected); err != nil {
+	if err := json.Unmarshal(expectedbytes, &expected); err != nil {
 		t.Errorf("%v: unable to recreate expected value from json bytes: %v", testname, err)
 		return false
 	}
