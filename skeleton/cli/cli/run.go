@@ -17,7 +17,7 @@ import (
 // It satisifies the interface expected by cmd/main.go
 // It sets up config from any arguments and environment.
 // Then it executes the application using the provided io streams.
-func Run(ctx context.Context, args, env []string, stdin io.Reader, stdout, stderr io.Writer) error {
+func Run(ctx context.Context, args, env []string, stdin io.ReadCloser, stdout, stderr io.WriteCloser) error {
 	rootCmd, cfg := root.New(stdin, stdout, stderr)
 
 	rootCmd.Subcommands = []*ffcli.Command{

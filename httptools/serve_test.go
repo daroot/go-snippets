@@ -40,11 +40,11 @@ func TestGetsContextCancel(t *testing.T) {
 	go func() {
 		close(started)                         // indicate the Serve go routine got scheduled and is now running
 		is.NoErr(httptools.Serve(ctx, 0, mux)) // Serve shuts down cleanly, context.Canceled did not propagate
-		close(done)                            // and we've now finished
+		close(done)                            // now finished
 	}()
 
 	go func() {
-		// run in a go routine so we can wait for started signal
+		// run in a go routine to wait for the started signal
 		// without interfering with the overall test timeout.
 		<-started // wait for Serve to be running
 		cancel()  // Do the thing; ensure it propagates
@@ -57,9 +57,9 @@ func TestGetsContextCancel(t *testing.T) {
 	}
 
 	logtext := logbuf.String()
-	is.True(strings.Contains(logtext, "HTTP service starting"))                // we at least started
-	is.True(strings.Contains(logtext, "HTTP service shutting down on cancel")) // we got the cancel signal
-	is.True(strings.Contains(logtext, "HTTP service stopped"))                 // we succesfully stopped
+	is.True(strings.Contains(logtext, "HTTP service starting"))                // successfully started
+	is.True(strings.Contains(logtext, "HTTP service shutting down on cancel")) // got a cancel signal
+	is.True(strings.Contains(logtext, "HTTP service stopped"))                 // succesfully stopped
 }
 
 func TestListenAndServePropagatesError(t *testing.T) {
@@ -80,17 +80,17 @@ func TestListenAndServePropagatesError(t *testing.T) {
 		listener, err := net.Listen("tcp", ":0")
 		is.NoErr(err)
 		usedport = listener.Addr().(*net.TCPAddr).Port
-		close(started) // signal that we've started our listener
-		<-done         // wait until after we've tried to start Serve
+		close(started) // signal that listener has started
+		<-done         // wait until after attempting to start Serve
 		listener.Close()
 	}()
 
 	go func() {
-		<-started // wait for our listener routine to schedule and open the port.
+		<-started // wait for the listener routine to schedule and open the port.
 		err := httptools.Serve(ctx, usedport, mux)
 		t.Log(err)
 		close(done)
-		is.True(err != nil) // our ports conflicted
+		is.True(err != nil) // ports conflicted
 	}()
 
 	select {

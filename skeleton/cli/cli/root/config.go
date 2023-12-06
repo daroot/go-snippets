@@ -39,11 +39,11 @@ func (cfg *Config) WithLoggerCtx(ctx context.Context) context.Context {
 	return slogext.Add(ctx, log)
 }
 
-func New(in io.Reader, out io.Writer, err io.Writer) (*ffcli.Command, *Config) {
+func New(in io.Reader, out io.Writer, errs io.Writer) (*ffcli.Command, *Config) {
 	cfg := Config{
 		Stdin:     in,
 		Stdout:    out,
-		Stderr:    err,
+		Stderr:    errs,
 		BuildInfo: getBuildInfo(),
 	}
 	fs := flag.NewFlagSet("myapp", flag.ContinueOnError)

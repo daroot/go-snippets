@@ -135,8 +135,8 @@ func Save(t *testing.T, goldfile string, expected []byte) {
 func Compare[T any](t *testing.T, testname string, goldfile string, actual T, cmpopts ...cmp.Option) bool {
 	t.Helper()
 
-	// if our update-golden flag is set,
-	// first we save the actual output as the new expected,
+	// if update-golden flag is set,
+	// first save the actual output as the new expected,
 	// which should additionallly ensure
 	// that expected will match actual for this run.
 	if DoingUpdate() {

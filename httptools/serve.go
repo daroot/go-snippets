@@ -32,9 +32,9 @@ func (sw slogErrWriter) Write(p []byte) (int, error) {
 func Serve(ctx context.Context, port int, mux http.Handler) error {
 	log := slogext.From(ctx).With("component", "http", "port", port)
 
-	// Our ancestor ctx chain should have a signal.NotifyContext() in it,
+	// The ancestor ctx chain should have a signal.NotifyContext() in it,
 	// so when it cancels on a signal, everything downstream does too.
-	// localcancel is used to ensure we can cleanly http.Server.Shutdown
+	// localcancel is used to ensure http.Server.Shutdown runs
 	// in the event that ListenAndServe exits for any reason other than
 	// the global signal cancellation, such as a port conflict.
 	ctx, localcancel := context.WithCancel(ctx)
@@ -48,7 +48,7 @@ func Serve(ctx context.Context, port int, mux http.Handler) error {
 		IdleTimeout:       300 * time.Second,
 		ErrorLog:          golog.New(slogErrWriter{log.With(slog.String("component", "http.Server"))}, "", 0),
 		BaseContext: func(_ net.Listener) context.Context {
-			return ctx // all requests inherit from our global context
+			return ctx // all requests inherit from the global context
 		},
 	}
 
@@ -66,21 +66,21 @@ func Serve(ctx context.Context, port int, mux http.Handler) error {
 		if srverr = srv.ListenAndServe(); srverr != nil {
 			if !errors.Is(srverr, http.ErrServerClosed) {
 				log.Error("http.Server returned abnormally, stopping app", slogext.Error(srverr))
-				localcancel() // so our shutdown waiter will not block forever.
+				localcancel() // shutdown waiter will not block forever.
 				return
 			}
 			log.Debug("closing http.Server on clean shutdown")
-			srverr = nil // ErrServerClosed is not an error for our caller.
+			srverr = nil // ErrServerClosed is not an error for the caller.
 		}
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		// Wait for our context to cancel (via the local or upstream cancel())
+		// Wait for the context to cancel (via the local or upstream cancel())
 		<-ctx.Done()
 		log.Info("HTTP service shutting down on cancel")
-		// Needs a clean context so it's not pre-canceled while we shutdown.
+		// Needs a clean context so it's not pre-canceled during shutdown.
 		//nolint:gomnd // again, deliberately encode magic default
 		shutctx, shutcancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 		defer shutcancel()

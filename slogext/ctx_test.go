@@ -63,7 +63,7 @@ func TestFrom(t *testing.T) {
 func TestDefault(t *testing.T) {
 	tl := newTestLogger(t)
 
-	// restore our default when done to ensure any other tests don't get surprise default loggers.
+	// restore defaults when done to ensure any other tests don't get surprise default loggers.
 	prevDefault := slogext.GetContextDefault()
 	defer func() {
 		slogext.SetContextDefault(prevDefault)

@@ -42,7 +42,7 @@ func (tc testcase[T]) validateGolden(t *testing.T, path string) error {
 }
 
 // because Go can't do map[string]testcase without an instantiated type,
-// we need to use an interface allow all varieties of testcase[x] to live in one map.
+// use an interface to allow all varieties of testcase[x] to live in one map.
 type compareTester interface {
 	testCompare(*testing.T, string, string) bool
 	validateGolden(*testing.T, string) error
@@ -110,7 +110,7 @@ func TestCompare(t *testing.T) {
 
 			is := is.New(t)
 
-			// Don't use t.TempDir(), because we explicitly need to be in testdata/ dir
+			// Don't use t.TempDir(), explicitly need to be in testdata/ dir
 			file, err := os.CreateTemp("testdata", "sample-*.json")
 			is.NoErr(err) // create temporary golden file
 			path := file.Name()

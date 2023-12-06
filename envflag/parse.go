@@ -24,7 +24,7 @@ func Parse(fs *flag.FlagSet, args, environ []string) error {
 		return fmt.Errorf("parsing arg flags: %w", err)
 	}
 
-	// turn os.environ format into a useful map.
+	// turn os.Environ() format into a useful map.
 	env := map[string]string{}
 	for _, entry := range environ {
 		k, v, found := strings.Cut(entry, "=")
@@ -57,7 +57,7 @@ func Parse(fs *flag.FlagSet, args, environ []string) error {
 	fs.VisitAll(func(f *flag.Flag) {
 		key := envName(f.Name)
 		if verr != nil || hadArg[key] {
-			// if we had a manual flag or error, skip doing more
+			// on a manual flag or error, skip doing more
 			return
 		}
 

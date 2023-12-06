@@ -35,16 +35,16 @@ import (
 // so humans can look at git diff after running an `-update-golden`,
 // and verify that the changes match expectations.
 //
-// As a result, we use proto objects and protocmp.Transform() with cmp.Diff,
+// As a result, proto objects and cmp.Diff with protocmp.Transform() are used,
 // because protojson.Marshal output is deliberately not stable,
 // and the raw json bytes from protojson can **never** be compared.
 // See https://github.com/golang/protobuf/issues/1121 for details.
 func Compare[T proto.Message](t *testing.T, testname string, goldfile string, actual T) bool {
 	t.Helper()
 
-	// If we're updating, first we Save our new golden file;
+	// When updating, first Save the new golden file;
 	// this overwrites any previous golden file and
-	// should ensure we get no change from cmp.Diff below.
+	// should ensure no changes in cmp.Diff below.
 	if testgolden.DoingUpdate() {
 		jbytes, err := protojson.MarshalOptions{UseProtoNames: true, Indent: "  "}.Marshal(actual)
 		if err != nil {

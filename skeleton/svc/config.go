@@ -15,8 +15,8 @@ const (
 	ErrNoArgs = consterr.Err("missing args, pass in os.Args")
 )
 
-// Config is the service configuration as passed from our container
-// orchestrator via CLI flags or env variables.
+// Config contains the service configuration as parsed from CLI flags, env
+// variables, and embedded build information.
 type Config struct {
 	AppName  string
 	LogLevel *slog.LevelVar
@@ -36,7 +36,7 @@ func NewConfig(args []string, env []string) (*Config, error) {
 		BuildInfo: getBuildInfo(),
 	}
 
-	// ContinueOnError because we never want to panic or os.Exit() except at top level.
+	// ContinueOnError as to never panic or os.Exit() except at the top level.
 	fs := flag.NewFlagSet(c.AppName, flag.ContinueOnError)
 	fs.TextVar(c.LogLevel, "log-level", &slog.LevelVar{}, "logging level (debug, info, warn, error)")
 	fs.IntVar(&c.Port, "port", 8000, "network port to listen on")

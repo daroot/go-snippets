@@ -13,7 +13,7 @@ import (
 	"myapp/slogext"
 )
 
-// app wraps all our configuration and instantiated state.
+// app wraps all configuration and instantiated state.
 type myapp struct {
 	cfg    *Config
 	mux    *http.ServeMux
@@ -21,7 +21,7 @@ type myapp struct {
 	stuff  string
 }
 
-// Run our app
+// Run the app
 func (a myapp) Run(ctx context.Context) error {
 	log := slogext.From(ctx)
 	log = log.With(slog.String("app", "myapp"), slog.Int("port", a.cfg.Port))
@@ -52,7 +52,7 @@ func (a myapp) Run(ctx context.Context) error {
 	return nil
 }
 
-// Create our app from a config
+// Create an app from a config
 // It takes and returns a context
 // so that it can choose to set up an initial context for Run(),
 // and deal with any signal canceling/shutdown logic
@@ -85,7 +85,8 @@ func newApp(ctx context.Context, output io.Writer, cfg *Config) (context.Context
 // then executes the application logging to the provided output writer.
 // args should be os.Args
 // env should be os.Environ()
-func Run(ctx context.Context, output io.Writer, args, env []string) error {
+// input, output, and errout should be os.Stdin, os.Stdout, and os.Stderr respectively.
+func Run(ctx context.Context, args, env []string, input io.ReadCloser, output, errout io.WriteCloser) error {
 	cfg, err := NewConfig(args, env)
 	if err != nil {
 		return fmt.Errorf("couldn't load config: %w", err)
