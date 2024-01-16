@@ -4,7 +4,7 @@ description: Small Go sub-packages.
 author: me
 tags: [ go, snippets, code, reuseable ]
 date: 2023-06-01T15:54:12-0700
-lastmod: 2023-08-14T09:18:59-0700
+lastmod: 2023-10-08T09:22:55+0000
 draft: false
 license: "[Grug 1-Clause License](./LICENSE)"
 ---
@@ -23,6 +23,7 @@ Also update all instances of `myapp` and `importfromprojectlocally`,
 as those are used in instances where some of these snippets depend on each other,
 such as `testgoldenproto` using `testgolden`.
 
+- **buildinfo**: populate a struct containing git commit hash and date of build.
 - **consterr**: string-based errors, instead of errors.New(), so you can make them `const`
 - **envflag**: set flag variables via ENV without any extra third party dependencies like viper.
 - **slogext**: various slog helpers for contexts, errors, and time formats.
