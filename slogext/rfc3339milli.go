@@ -17,7 +17,7 @@ func RFC3339Millis(_ []string, a slog.Attr) slog.Attr {
 			Key: slog.TimeKey,
 			// This could use the same code as the internal slog.writeRFC3339Millis
 			// for performance without extra memory allocations.
-			Value: slog.StringValue(a.Value.Time().Format("2006-01-02T15:04:05.999Z07:00")),
+			Value: slog.StringValue(a.Value.Time().Format("2006-01-02T15:04:05.000Z07:00")),
 		}
 	}
 	return a

@@ -24,9 +24,9 @@ func TestRFC3339Millis(t *testing.T) {
 			time.Date(2023, 9, 16, 11, 37, 23, 42000000, time.UTC),
 			"2023-09-16T11:37:23.042Z",
 		},
-		"no milli value": {
+		"milli value is zero padded": {
 			time.Date(2023, 9, 16, 11, 37, 23, 0, time.UTC),
-			"2023-09-16T11:37:23Z",
+			"2023-09-16T11:37:23.000Z",
 		},
 	}
 
